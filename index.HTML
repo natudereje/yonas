@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dynamic Portfolio</title>
+    <style>
+        :root {
+            --primary: #ff0000;
+            --secondary: #000000;
+            --dark: #121212;
+            --light: #f1f1f1;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--dark));
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 10%;
+            background: url('https://images.unsplash.com/photo-1543351611-58f69d7c1781?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            position: relative;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .cta-btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--light);
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .cta-btn:hover {
+            background-color: transparent;
+            color: var(--primary);
+        }
+        
+        section {
+            padding: 5rem 10%;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--primary);
+            text-align: center;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--primary);
+        }
+        
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .interest-card {
+            background-color: var(--secondary);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .interest-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .interest-content {
+            padding: 1.5rem;
+        }
+        
+        .interest-content h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .interest-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.2);
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 5px;
+            height: 250px;
+            cursor: pointer;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
+        
+        .gallery-caption {
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            padding: 1rem;
+            color: white;
+            z-index: 1;
+            transition: bottom 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-caption {
+            bottom: 0;
+        }
+        
+        .music-player {
+            background-color: var(--secondary);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .skip-btn {
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background-color: #333;
+            border-radius: 5px;
+            margin: 1rem 0;
+            cursor: pointer;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 5px;
+            width: 0%;
+        }
+        
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        
+        .playlist {
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+        
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .playlist-item:hover {
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+        
+        .playlist-item.active {
+            background-color: rgba(255, 0, 0, 0.2);
+        }
+        
+        .playlist-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            margin-right: 1rem;
+        }
+        
+        .playlist-info {
+            flex: 1;
+        }
+        
+        .playlist-info h4 {
+            margin-bottom: 0.2rem;
+        }
+        
+        .playlist-info p {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        
+        footer {
+            background-color: var(--secondary);
+            padding: 2rem 10%;
+            text-align: center;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .social-links a {
+            color: var(--light);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary);
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            section {
+                padding: 3rem 5%;
+            }
+        }
+        
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">BALL & PRAY</div>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#interests">Interests</a>
+                <a href="#gallery">Gallery</a>
+                <a href="#music">Music</a>
+            </div>
+        </nav>
+    </header>
+    
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="fade-in">Ball Hard, Pray Harder</h1>
+            <p class="slide-up">Basketball enthusiast • Faith first • Rap & Mezmur lover • Car admirer</p>
+            <a href="#interests" class="cta-btn slide-up">Explore My World</a>
+        </div>
+    </section>
+    
+    <section id="about">
+        <h2 class="section-title">About Me</h2>
+        <div class="interests-grid">
+            <div class="interest-card slide-up">
+                <div class="interest-content">
+                    <h3>Faith First</h3>
+                    <p>My relationship with God is my foundation. Prayer isn't just something I do - it's who I am. My faith guides every aspect of my life.</p>
+                </div>
+            </div>
+            <div class="interest-card slide-up" style="animation-delay: 0.2s">
+                <div class="interest-content">
+                    <h3>Basketball Lifestyle</h3>
+                    <p>From the court to my walls, basketball is more than a game. It's discipline, teamwork, and passion. NBA posters? My room is a shrine.</p>
+                </div>
+            </div>
+            <div class="interest-card slide-up" style="animation-delay: 0.4s">
+                <div class="interest-content">
+                    <h3>Music That Moves Me</h3>
+                    <p>Rap for the energy, Mezmur for the soul. My playlists match my moods - hype tracks for the court, spiritual songs for reflection.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="interests">
+        <h2 class="section-title">My Passions</h2>
+        <div class="interests-grid">
+            <div class="interest-card">
+                <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Basketball">
+                <div class="interest-content">
+                    <h3>Basketball</h3>
+                    <p>The sound of sneakers on court, the swish of the net - pure poetry. I study the greats and bring that energy to my own game.</p>
+                </div>
+            </div>
+            <div class="interest-card">
+                <img src="https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Prayer">
+                <div class="interest-content">
+                    <h3>Prayer & Faith</h3>
+                    <p>My daily conversations with God keep me grounded. Whether it's morning devotion or game-time prayers, my faith is my compass.</p>
+                </div>
+            </div>
+            <div class="interest-card">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Music">
+                <div class="interest-content">
+                    <h3>Rap & Mezmur</h3>
+                    <p>From Kendrick to Kanye, from traditional Mezmur to contemporary worship - my playlist reflects my diverse spiritual and cultural journey.</p>
+                </div>
+            </div>
+            <div class="interest-card">
+                <img src="https://images.unsplash.com/photo-1494905998402-395d579af36f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Posters">
+                <div class="interest-content">
+                    <h3>Poster Collection</h3>
+                    <p>My walls tell stories - NBA legends next to rap icons, interspersed with scripture. Each poster represents a piece of my identity.</p>
+                </div>
+            </div>
+            <div class="interest-card">
+                <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Cars">
+                <div class="interest-content">
+                    <h3>Car Culture</h3>
+                    <p>The engineering, the design, the power - cars are rolling art. From classic muscle to modern hypercars, I appreciate them all.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="gallery">
+        <h2 class="section-title">My Gallery</h2>
+        <div class="gallery">
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Basketball Court">
+                <div class="gallery-caption">My Second Home - The Court</div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Prayer">
+                <div class="gallery-caption">Morning Devotions</div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Music">
+                <div class="gallery-caption">My Music Sanctuary</div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Posters">
+                <div class="gallery-caption">Wall of Inspiration</div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Cars">
+                <div class="gallery-caption">Dream Machines</div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Concert">
+                <div class="gallery-caption">Music That Moves Me</div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="music">
+        <h2 class="section-title">My Playlist</h2>
+        <div class="music-player">
+            <h3>Now Playing: <span id="now-playing">Blessings - Lecrae ft. Ty Dolla $ign</span></h3>
+            <div class="player-controls">
+                <button class="skip-btn" id="prev-btn">⏮</button>
+                <button class="play-btn" id="play-btn">▶</button>
+                <button class="skip-btn" id="next-btn">⏭</button>
+            </div>
+            <div class="progress-container">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="time-info">
+                <span id="current-time">0:00</span>
+                <span id="duration">3:45</span>
+            </div>
+            <div class="playlist">
+                <div class="playlist-item active">
+                    <img src="https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228" alt="Blessings">
+                    <div class="playlist-info">
+                        <h4>Blessings</h4>
+                        <p>Lecrae ft. Ty Dolla $ign</p>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <img src="https://i.scdn.co/image/ab67616d00001e026ab1634b2a6b329a0e9c6c5b" alt="Ultralight Beam">
+                    <div class="playlist-info">
+                        <h4>Ultralight Beam</h4>
+                        <p>Kanye West</p>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <img src="https://i.scdn.co/image/ab67616d00001e02e20e31e642d34f5b5be73c8a" alt="HUMBLE.">
+                    <div class="playlist-info">
+                        <h4>HUMBLE.</h4>
+                        <p>Kendrick Lamar</p>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <img src="https://i.scdn.co/image/ab67616d00001e02a3c4dfe506ff3b42b5f8c6c3" alt="Wolves">
+                    <div class="playlist-info">
+                        <h4>Wolves</h4>
+                        <p>Kanye West ft. Sia</p>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <img src="https://i.scdn.co/image/ab67616d00001e02112d7a1ff3b5be4e0b8e9a9d" alt="Mezmur">
+                    <div class="playlist-info">
+                        <h4>Ethiopian Mezmur</h4>
+                        <p>Traditional Worship</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="logo">BALL & PRAY</div>
+        <p>Ball hard, pray harder - that's the motto.</p>
+        <div class="social-links">
+            <a href="#"><i>📱</i></a>
+            <a href="#"><i>📸</i></a>
+            <a href="#"><i>🎵</i></a>
+            <a href="#"><i>🏀</i></a>
+        </div>
+        <p>&copy; 2023 All Rights Reserved</p>
+    </footer>
+    
+    <a href="#" class="back-to-top">↑</a>
+    
+    <script>
+        // Scroll reveal animation
+        const sr = ScrollReveal({
+            origin: 'top',
+            distance: '30px',
+            duration: 1000,
+            reset: true
+        });
+        
+        sr.reveal('.interest-card', { interval: 200 });
+        sr.reveal('.gallery-item', { interval: 150 });
+        
+        // Back to top button
+        const backToTopBtn = document.querySelector('.back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Music player functionality
+        const playBtn = document.getElementById('play-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progress = document.getElementById('progress');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+        const nowPlaying = document.getElementById('now-playing');
+        const playlistItems = document.querySelectorAll('.playlist-item');
+        
+        let isPlaying = false;
+        let currentSong = 0;
+        
+        const songs = [
+            {
+                title: "Blessings",
+                artist: "Lecrae ft. Ty Dolla $ign",
+                duration: "3:45",
+                progress: 50
+            },
+            {
+                title: "Ultralight Beam",
+                artist: "Kanye West",
+                duration: "5:20",
+                progress: 30
+            },
+            {
+                title: "HUMBLE.",
+                artist: "Kendrick Lamar",
+                duration: "2:57",
+                progress: 70
+            },
+            {
+                title: "Wolves",
+                artist: "Kanye West ft. Sia",
+                duration: "4:10",
+                progress: 20
+            },
+            {
+                title: "Ethiopian Mezmur",
+                artist: "Traditional Worship",
+                duration: "6:30",
+                progress: 10
+            }
+        ];
+        
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            playBtn.textContent = isPlaying ? '❚❚' : '▶';
+            updateSongInfo();
+        }
+        
+        function updateSongInfo() {
+            const song = songs[currentSong];
+            nowPlaying.textContent = `${song.title} - ${song.artist}`;
+            durationEl.textContent = song.duration;
+            progress.style.width = `${song.progress}%`;
+            
+            // Update active playlist item
+            playlistItems.forEach((item, index) => {
+                if (index === currentSong) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+        
+        function prevSong() {
+            currentSong--;
+            if (currentSong < 0) {
+                currentSong = songs.length - 1;
+            }
+            updateSongInfo();
+        }
+        
+        function nextSong() {
+            currentSong++;
+            if (currentSong > songs.length - 1) {
+                currentSong = 0;
+            }
+            updateSongInfo();
+        }
+        
+        playBtn.addEventListener('click', togglePlay);
+        prevBtn.addEventListener('click', prevSong);
+        nextBtn.addEventListener('click', nextSong);
+        
+        // Click on playlist item to play song
+        playlistItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                currentSong = index;
+                isPlaying = true;
+                playBtn.textContent = '❚❚';
+                updateSongInfo();
+            });
+        });
+        
+        // Initialize
+        updateSongInfo();
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
